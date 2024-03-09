@@ -1,0 +1,60 @@
+﻿@model pizza_planner.Models.Pizza
+
+@{
+    ViewData["Title"] = "Create";
+    var sizes = Enum.GetValues(typeof(PizzaSize)).Cast<PizzaSize>();
+    var crusts = Enum.GetValues(typeof(PizzaCrust)).Cast<PizzaCrust>();
+}
+
+<h1>Create</h1>
+
+<h4>Pizza</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Size" class="control-label"></label>
+                <select asp-for="Size" class="form-control">
+                    @foreach (var size in sizes)
+                    {
+                        <option value="@((int)size)">@size.ToString()</option>
+                    }
+                </select>
+                <span asp-validation-for="Size" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Crust" class="control-label"></label>
+                <select asp-for="Crust" class="form-control">
+                    @foreach (var crust in crusts)
+                    {
+                        <option value="@((int)crust)">@crust.ToString()</option>
+                    }
+                </select>
+                <span asp-validation-for="Crust" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3 mb-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "/Pizzas")">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

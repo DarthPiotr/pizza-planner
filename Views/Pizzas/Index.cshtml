@@ -1,0 +1,87 @@
+﻿@model IEnumerable<pizza_planner.Models.Pizza>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>List</h1>
+
+<form class="col-md-4" role="search">
+    <div class="mb-3">
+        <label class="form-label" for="yearOperator">Search</label>
+        <input type="text" class="form-control" typeof="search" placeholder="Search" aria-label="Search"
+               name="query" value="@ViewBag.Query">
+
+    </div>
+    @* <div class="mb-3">
+        <label class="form-label" for="yearOperator">Release Year</label>
+        <div class="input-group">
+            <select class="form-control" id="yearOperator" name="yearOperator">
+                <option selected="@(ViewBag.YearOperator == "<")">&lt;</option>
+                <option selected="@(ViewBag.YearOperator == ">")">&gt;</option>
+                <option selected="@(ViewBag.YearOperator == "≤")">&le;</option>
+                <option selected="@(ViewBag.YearOperator == "≥")">&ge;</option>
+                <option selected="@(ViewBag.YearOperator == "=")">=</option>
+            </select>
+            <input type="number" class="form-control" typeof="search" placeholder="Year" aria-label="Search"
+                   name="yearFilter" value="@(ViewBag.YearFilter <= 0 ? null : ViewBag.YearFilter)">
+        </div>
+
+    </div> *@
+    <div class="mb-3">
+        <button class="btn btn-secondary" type="submit">
+            <i class="fa fa-search"></i> Search
+        </button>
+        <a href="@Url.Action("Index", "/Tracks")" class="btn btn-danger">
+            <i class="fa fa-close"></i> Clear
+        </a>
+    </div>
+</form>
+
+<p>
+    <a href="@Url.Action("Create", "/Pizzas")" class="btn btn-success">
+        <i class="fa fa-plus"></i> Create New
+    </a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Size)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Crust)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Size)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Crust)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
