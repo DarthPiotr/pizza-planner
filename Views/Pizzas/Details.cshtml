@@ -7,7 +7,15 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Pizza</h4>
+    <div class="d-flex align-items-center justify-content-between">
+        <h4 class="flex-grow-1 mb-0">Pizza</h4>
+        <a href="@Url.Action("Edit", "/Pizzas", new { id = Model.Id })" class="btn btn-outline-primary me-2">
+            <i class="fa fa-edit"></i>
+        </a>
+        <a href="@Url.Action("Delete", "/Pizzas", new { id = Model.Id })" class="btn btn-outline-danger">
+            <i class="fa fa-trash"></i>
+        </a>
+    </div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -15,6 +23,12 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Ingredients
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Ingredients.Count > 0 ? String.Join(", ", Model.Ingredients) : "-")
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
@@ -37,6 +51,5 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

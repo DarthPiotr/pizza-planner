@@ -70,24 +70,6 @@ namespace pizza_planner.Migrations
                     b.ToTable("Pizzas");
                 });
 
-            modelBuilder.Entity("pizza_planner.Models.PizzaIngredients", b =>
-                {
-                    b.Property<int>("PizzaId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("PizzaId", "IngredientId");
-
-                    b.HasIndex("IngredientId");
-
-                    b.ToTable("PizzaIngredients");
-                });
-
             modelBuilder.Entity("IngredientPizza", b =>
                 {
                     b.HasOne("pizza_planner.Models.Ingredient", null)
@@ -101,35 +83,6 @@ namespace pizza_planner.Migrations
                         .HasForeignKey("PizzasId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("pizza_planner.Models.PizzaIngredients", b =>
-                {
-                    b.HasOne("pizza_planner.Models.Ingredient", "Ingredient")
-                        .WithMany("PizzaIngredients")
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("pizza_planner.Models.Pizza", "Pizza")
-                        .WithMany("PizzaIngredients")
-                        .HasForeignKey("PizzaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ingredient");
-
-                    b.Navigation("Pizza");
-                });
-
-            modelBuilder.Entity("pizza_planner.Models.Ingredient", b =>
-                {
-                    b.Navigation("PizzaIngredients");
-                });
-
-            modelBuilder.Entity("pizza_planner.Models.Pizza", b =>
-                {
-                    b.Navigation("PizzaIngredients");
                 });
 #pragma warning restore 612, 618
         }

@@ -8,9 +8,14 @@ namespace pizza_planner.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
-        public ICollection<PizzaIngredients> PizzaIngredients { get; set; } = new List<PizzaIngredients>();
 
         public ICollection<Pizza> Pizzas { get; set; } = new List<Pizza>();
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -1,40 +1,28 @@
 ﻿@model IEnumerable<pizza_planner.Models.Pizza>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pizzas";
 }
 
-<h1>List</h1>
+<h1>Our Pizzas</h1>
 
 <form class="col-md-4" role="search">
-    <div class="mb-3">
-        <label class="form-label" for="yearOperator">Search</label>
-        <input type="text" class="form-control" typeof="search" placeholder="Search" aria-label="Search"
-               name="query" value="@ViewBag.Query">
-
-    </div>
-    @* <div class="mb-3">
-        <label class="form-label" for="yearOperator">Release Year</label>
-        <div class="input-group">
-            <select class="form-control" id="yearOperator" name="yearOperator">
-                <option selected="@(ViewBag.YearOperator == "<")">&lt;</option>
-                <option selected="@(ViewBag.YearOperator == ">")">&gt;</option>
-                <option selected="@(ViewBag.YearOperator == "≤")">&le;</option>
-                <option selected="@(ViewBag.YearOperator == "≥")">&ge;</option>
-                <option selected="@(ViewBag.YearOperator == "=")">=</option>
-            </select>
-            <input type="number" class="form-control" typeof="search" placeholder="Year" aria-label="Search"
-                   name="yearFilter" value="@(ViewBag.YearFilter <= 0 ? null : ViewBag.YearFilter)">
+    <div class="input-group mb-3">
+        <div class="input-group-append">
+		    <input type="text" class="form-control rounded" typeof="search" placeholder="Search" aria-label="Search"
+                   name="query" value="@ViewBag.Query">
         </div>
-
-    </div> *@
-    <div class="mb-3">
-        <button class="btn btn-secondary" type="submit">
-            <i class="fa fa-search"></i> Search
-        </button>
-        <a href="@Url.Action("Index", "/Tracks")" class="btn btn-danger">
-            <i class="fa fa-close"></i> Clear
-        </a>
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+        <div class="input-group-append">
+            <a href="@Url.Action("Index", "/Pizzas")" 
+               class="btn btn-danger @(String.IsNullOrWhiteSpace(ViewBag.Query) ? "invisible" : "visible")">
+                <i class="fa fa-close"></i>
+            </a>
+        </div>
     </div>
 </form>
 
@@ -43,11 +31,15 @@
         <i class="fa fa-plus"></i> Create New
     </a>
 </p>
-<table class="table">
+<table class="table caption-top align-middle">
     <thead>
         <tr>
+            <th scope="col">#</th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                Ingredients
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
@@ -64,8 +56,15 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <th scope="row">@item.Id</th>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <a href="@Url.Action("Details", "/Pizzas", new { id = item.Id })"
+                   class="link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                        @item.Name
+                </a>
+            </td>
+            <td>
+                @(item.Ingredients.Count > 0 ? String.Join(", ", item.Ingredients) : "-")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
@@ -77,9 +76,12 @@
                 @Html.DisplayFor(modelItem => item.Crust)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a href="@Url.Action("Edit", "/Pizzas", new { id = item.Id })" class="btn btn-outline-primary">
+                    <i class="fa fa-edit"></i>
+                </a>
+                <a href="@Url.Action("Delete", "/Pizzas", new { id = item.Id })" class="btn btn-outline-danger">
+                    <i class="fa fa-trash"></i>
+                </a>
             </td>
         </tr>
 }

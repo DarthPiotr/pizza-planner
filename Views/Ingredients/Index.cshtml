@@ -1,19 +1,24 @@
 ﻿@model IEnumerable<pizza_planner.Models.Ingredient>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Ingredients";
 }
 
-<h1>Index</h1>
+<h1>All Ingredients</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a href="@Url.Action("Create", "/Ingredients")" class="btn btn-success">
+        <i class="fa fa-plus"></i> Create New
+    </a>
 </p>
-<table class="table">
+<table class="table caption-top align-middle">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                Times used
             </th>
             <th></th>
         </tr>
@@ -22,12 +27,21 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <a href="@Url.Action("Details", "/Ingredients", new { id = item.Id })"
+                    class="link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                    @item.Name
+                </a>
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @item.Pizzas.Count
+            </td>
+            <td>
+                <a href="@Url.Action("Edit", "/Ingredients", new { id = item.Id })" class="btn btn-outline-primary">
+                    <i class="fa fa-edit"></i>
+                </a>
+                <a href="@Url.Action("Delete", "/Ingredients", new { id = item.Id })" class="btn btn-outline-danger">
+                    <i class="fa fa-trash"></i>
+                </a>
             </td>
         </tr>
 }

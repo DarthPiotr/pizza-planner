@@ -7,7 +7,15 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Ingredient</h4>
+    <div class="d-flex align-items-center justify-content-between">
+        <h4 class="flex-grow-1 mb-0">Ingredient</h4>
+        <a href="@Url.Action("Edit", "/Ingredients", new { id = Model.Id })" class="btn btn-outline-primary me-2">
+            <i class="fa fa-edit"></i>
+        </a>
+        <a href="@Url.Action("Delete", "/Ingredients", new { id = Model.Id })" class="btn btn-outline-danger">
+            <i class="fa fa-trash"></i>
+        </a>
+    </div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -16,9 +24,30 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
+        <dt class="col-sm-2">
+            Pizzas
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Pizzas.Count <= 0)
+            {
+                <span>-</span>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var pizza in Model.Pizzas)
+                    {
+                        <li>
+                            <a href="@Url.Action("Edit", "/Pizzas", new { id = pizza.Id })">
+                                @pizza.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

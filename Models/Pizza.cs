@@ -10,13 +10,15 @@ namespace pizza_planner.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public double Price { get; set; }
+        [Required]
         public PizzaSize Size { get; set; }
+        [Required]
         public PizzaCrust Crust { get; set; }
 
-        public ICollection<PizzaIngredients> PizzaIngredients { get; set; } = new List<PizzaIngredients>();
-
-        public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
+        public ICollection<Ingredient>? Ingredients { get; set; } = new List<Ingredient>();
     }
 }

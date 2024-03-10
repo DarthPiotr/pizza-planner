@@ -8,12 +8,17 @@
 
 <h1>Edit</h1>
 
-<h4>Pizza</h4>
+<div class="d-flex justify-content-between">
+	<h4>Pizza</h4>
+
+	<a href="@Url.Action("Delete", "/Pizzas", new { id = Model.Id })" class="btn btn-outline-danger">
+		<i class="fa fa-trash"></i>
+	</a>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -45,7 +50,21 @@
                 </select>
                 <span asp-validation-for="Crust" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Ingredients" class="control-label"></label>
+                <select asp-for="Ingredients" class="form-select" id="multiple-select" data-placeholder="Choose anything" multiple formnovalidate="formnovalidate">
+                    @foreach (var ingredient in ViewBag.Ingredients)
+                    {
+                        <option value="@((int)ingredient.Id)"
+                                selected="@(Model.Ingredients.FirstOrDefault(i => i.Id == ingredient.Id) != null)">
+                            @ingredient.Name
+                        </option>
+                    }
+                </select>
+                <span asp-validation-for="Ingredients" class="text-danger"></span>
+            </div>
             <div class="form-group mt-3 mb-3">
+                
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -57,5 +76,12 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $('#multiple-select').select2({
+            theme: 'bootstrap-5'
+        });
+    </script>
 }

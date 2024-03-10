@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Humanizer.Localisation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using pizza_planner.Models;
 
 namespace pizza_planner.Controllers
@@ -19,9 +22,22 @@ namespace pizza_planner.Controllers
         }
 
         // GET: Pizzas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? query)
         {
-            return View(await _context.Pizzas.ToListAsync());
+            ViewBag.Query = query;
+
+            IQueryable<Pizza> pizzaQuery = _context.Pizzas
+                .Include(p => p.Ingredients);
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                query = query.ToLower();
+                pizzaQuery = pizzaQuery.Where(p =>
+                        p.Name.ToLower().Contains(query) 
+                    );
+            }
+
+            return View(await pizzaQuery.ToListAsync());
         }
 
         // GET: Pizzas/Details/5
@@ -33,6 +49,7 @@ namespace pizza_planner.Controllers
             }
 
             var pizza = await _context.Pizzas
+                .Include (p => p.Ingredients)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (pizza == null)
             {
@@ -45,6 +62,8 @@ namespace pizza_planner.Controllers
         // GET: Pizzas/Create
         public IActionResult Create()
         {
+            ViewBag.Ingredients = _context.Ingredients.ToList();
+
             return View();
         }
 
@@ -53,30 +72,59 @@ namespace pizza_planner.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,Size,Crust")] Pizza pizza)
+        public async Task<IActionResult> Create(IFormCollection collection)
         {
-            if (ModelState.IsValid)
+            try
             {
+                var pizza = new Pizza();
+                pizza.Name = collection["Name"].ToString();
+                pizza.Price = Convert.ToDouble(collection["Price"].ToString());
+                pizza.Size = (PizzaSize)Convert.ToInt32(collection["Size"].ToString());
+                pizza.Crust = (PizzaCrust)Convert.ToInt32(collection["Crust"].ToString());
+                pizza.Ingredients?.Clear();
+
+                if (collection.ContainsKey("Ingredients"))
+                {
+                    foreach (var ingredientString in collection["Ingredients"])
+                    {
+                        if (!int.TryParse(ingredientString, out int ingredientId))
+                        {
+                            continue;
+                        }
+
+                        Ingredient? ingredient = _context.Ingredients.FirstOrDefault(i => i.Id == ingredientId);
+                        if (ingredient != null)
+                        {
+                            pizza.Ingredients?.Add(ingredient);
+                        }
+                    }
+                }
+
                 _context.Add(pizza);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(pizza);
+            catch
+            {
+                return Create();
+            }
         }
 
         // GET: Pizzas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+                var pizza = await _context.Pizzas
+                .Include( p => p.Ingredients)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            var pizza = await _context.Pizzas.FindAsync(id);
             if (pizza == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Ingredients = _context.Ingredients.ToList();
+
             return View(pizza);
         }
 
@@ -85,34 +133,52 @@ namespace pizza_planner.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Size,Crust")] Pizza pizza)
+        public async Task<IActionResult> Edit(int id, IFormCollection collection)
         {
-            if (id != pizza.Id)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var pizza = await _context.Pizzas
+                .Include(p => p.Ingredients)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+                if (pizza == null)
                 {
-                    _context.Update(pizza);
-                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+
+                pizza.Name = collection["Name"].ToString();
+                pizza.Price = Convert.ToDouble(collection["Price"].ToString());
+                pizza.Size = (PizzaSize)Convert.ToInt32(collection["Size"].ToString());
+                pizza.Crust = (PizzaCrust)Convert.ToInt32(collection["Crust"].ToString());
+                pizza.Ingredients?.Clear();
+
+                if (collection.ContainsKey("Ingredients"))
                 {
-                    if (!PizzaExists(pizza.Id))
+                    foreach (var ingredientString in collection["Ingredients"])
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        if(!int.TryParse(ingredientString, out int ingredientId))
+                        {
+                            continue;
+                        } 
+                        
+                        Ingredient? ingredient = _context.Ingredients.FirstOrDefault(i => i.Id == ingredientId);
+                        if (ingredient != null)
+                        {
+                            pizza.Ingredients?.Add(ingredient);
+                        }
                     }
                 }
+
+                _context.Update(pizza);
+                _context.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
+            } 
+            catch
+            {
+                return await Edit(id);
             }
-            return View(pizza);
         }
 
         // GET: Pizzas/Delete/5
@@ -124,6 +190,7 @@ namespace pizza_planner.Controllers
             }
 
             var pizza = await _context.Pizzas
+                .Include(p => p.Ingredients)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (pizza == null)
             {

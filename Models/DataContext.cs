@@ -9,7 +9,6 @@ namespace pizza_planner.Models
 
         public virtual DbSet<Pizza> Pizzas { get; set; }
         public virtual DbSet<Ingredient> Ingredients { get; set; }
-        public virtual DbSet<PizzaIngredients> PizzaIngredients { get; set; }
 
         public DataContext(IConfiguration configuration)
         {

@@ -21,7 +21,11 @@ namespace pizza_planner.Controllers
         // GET: Ingredients
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ingredients.ToListAsync());
+            List<Ingredient>? ingredients = await _context.Ingredients
+                .Include(i => i.Pizzas)
+                .ToListAsync();
+
+            return View(ingredients);
         }
 
         // GET: Ingredients/Details/5
@@ -124,6 +128,7 @@ namespace pizza_planner.Controllers
             }
 
             var ingredient = await _context.Ingredients
+                .Include(x => x.Pizzas)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ingredient == null)
             {
@@ -138,13 +143,23 @@ namespace pizza_planner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ingredient = await _context.Ingredients.FindAsync(id);
-            if (ingredient != null)
+            var ingredient = await _context.Ingredients
+                .Include(x => x.Pizzas)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (ingredient == null)
             {
-                _context.Ingredients.Remove(ingredient);
+                return RedirectToAction(nameof(Index));
             }
 
+            if(ingredient.Pizzas.Count > 0)
+            {
+                return await Delete(id);
+            }
+
+            _context.Ingredients.Remove(ingredient);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
