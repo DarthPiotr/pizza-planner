@@ -37,6 +37,7 @@ namespace pizza_planner.Controllers
             }
 
             var ingredient = await _context.Ingredients
+                .Include (i => i.Pizzas)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ingredient == null)
             {

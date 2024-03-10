@@ -68,7 +68,9 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $('#multiple-select').select2({
-            theme: 'bootstrap-5'
+            theme: 'bootstrap-5',
+            closeOnSelect: false,
+            allowClear: true
         });
     </script>
 }

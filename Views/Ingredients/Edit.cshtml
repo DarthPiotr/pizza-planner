@@ -6,7 +6,12 @@
 
 <h1>Edit</h1>
 
-<h4>Ingredient</h4>
+<div class="d-flex align-items-center justify-content-between">
+    <h4 class="flex-grow-1 mb-0">Ingredient</h4>
+    <a href="@Url.Action("Delete", "/Ingredients", new { id = Model.Id })" class="btn btn-outline-danger">
+        <i class="fa fa-trash"></i>
+    </a>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-4">

@@ -77,28 +77,7 @@ namespace pizza_planner.Controllers
             try
             {
                 var pizza = new Pizza();
-                pizza.Name = collection["Name"].ToString();
-                pizza.Price = Convert.ToDouble(collection["Price"].ToString());
-                pizza.Size = (PizzaSize)Convert.ToInt32(collection["Size"].ToString());
-                pizza.Crust = (PizzaCrust)Convert.ToInt32(collection["Crust"].ToString());
-                pizza.Ingredients?.Clear();
-
-                if (collection.ContainsKey("Ingredients"))
-                {
-                    foreach (var ingredientString in collection["Ingredients"])
-                    {
-                        if (!int.TryParse(ingredientString, out int ingredientId))
-                        {
-                            continue;
-                        }
-
-                        Ingredient? ingredient = _context.Ingredients.FirstOrDefault(i => i.Id == ingredientId);
-                        if (ingredient != null)
-                        {
-                            pizza.Ingredients?.Add(ingredient);
-                        }
-                    }
-                }
+                this.FillPizzaInfo(pizza, collection);
 
                 _context.Add(pizza);
                 _context.SaveChanges();
@@ -147,28 +126,7 @@ namespace pizza_planner.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                pizza.Name = collection["Name"].ToString();
-                pizza.Price = Convert.ToDouble(collection["Price"].ToString());
-                pizza.Size = (PizzaSize)Convert.ToInt32(collection["Size"].ToString());
-                pizza.Crust = (PizzaCrust)Convert.ToInt32(collection["Crust"].ToString());
-                pizza.Ingredients?.Clear();
-
-                if (collection.ContainsKey("Ingredients"))
-                {
-                    foreach (var ingredientString in collection["Ingredients"])
-                    {
-                        if(!int.TryParse(ingredientString, out int ingredientId))
-                        {
-                            continue;
-                        } 
-                        
-                        Ingredient? ingredient = _context.Ingredients.FirstOrDefault(i => i.Id == ingredientId);
-                        if (ingredient != null)
-                        {
-                            pizza.Ingredients?.Add(ingredient);
-                        }
-                    }
-                }
+                this.FillPizzaInfo(pizza, collection);
 
                 _context.Update(pizza);
                 _context.SaveChanges();
@@ -218,6 +176,32 @@ namespace pizza_planner.Controllers
         private bool PizzaExists(int id)
         {
             return _context.Pizzas.Any(e => e.Id == id);
+        }
+
+        private void FillPizzaInfo(Pizza pizza, IFormCollection collection)
+        {
+            pizza.Name = collection["Name"].ToString();
+            pizza.Price = Convert.ToDouble(collection["Price"].ToString());
+            pizza.Size = (PizzaSize)Convert.ToInt32(collection["Size"].ToString());
+            pizza.Crust = (PizzaCrust)Convert.ToInt32(collection["Crust"].ToString());
+            pizza.Ingredients?.Clear();
+
+            if (collection.ContainsKey("Ingredients"))
+            {
+                foreach (var ingredientString in collection["Ingredients"])
+                {
+                    if (!int.TryParse(ingredientString, out int ingredientId))
+                    {
+                        continue;
+                    }
+
+                    Ingredient? ingredient = _context.Ingredients.FirstOrDefault(i => i.Id == ingredientId);
+                    if (ingredient != null)
+                    {
+                        pizza.Ingredients?.Add(ingredient);
+                    }
+                }
+            }
         }
     }
 }
