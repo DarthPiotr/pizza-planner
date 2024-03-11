@@ -93,7 +93,7 @@ namespace pizza_planner.Controllers
         // GET: Pizzas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-                var pizza = await _context.Pizzas
+            var pizza = await _context.Pizzas
                 .Include( p => p.Ingredients)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -181,7 +181,7 @@ namespace pizza_planner.Controllers
         private void FillPizzaInfo(Pizza pizza, IFormCollection collection)
         {
             pizza.Name = collection["Name"].ToString();
-            pizza.Price = Convert.ToDouble(collection["Price"].ToString());
+            pizza.Price = Convert.ToDecimal(collection["Price"].ToString());
             pizza.Size = (PizzaSize)Convert.ToInt32(collection["Size"].ToString());
             pizza.Crust = (PizzaCrust)Convert.ToInt32(collection["Crust"].ToString());
             pizza.Ingredients?.Clear();

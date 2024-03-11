@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Localization;
 using pizza_planner.Models;
+using System.Globalization;
 
 namespace pizza_planner
 {
@@ -29,6 +31,15 @@ namespace pizza_planner
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            var defaultCulture = new CultureInfo("pl-PL");
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(defaultCulture),
+                SupportedCultures = new List<CultureInfo> { defaultCulture },
+                SupportedUICultures = new List<CultureInfo> { defaultCulture }
+            };
+            app.UseRequestLocalization(localizationOptions);
 
             app.Run();
         }

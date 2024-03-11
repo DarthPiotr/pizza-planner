@@ -13,7 +13,9 @@ namespace pizza_planner.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public double Price { get; set; }
+        [DataType(DataType.Currency)]
+        [Range(typeof(decimal), "0", "9999999")]
+        public decimal Price { get; set; }
         [Required]
         public PizzaSize Size { get; set; }
         [Required]
