@@ -70,10 +70,32 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Size)
+                @{
+                    var color = "primary";
+                    switch (item.Size)
+                    {
+                        case PizzaSize.Small:
+                            color = "primary"; break;
+                        case PizzaSize.Medium:
+                            color = "secondary"; break;
+                        case PizzaSize.Large:
+                            color = "success"; break;
+                    }
+                }
+                <span class="badge text-bg-@color">@item.Size</span>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Crust)
+                @{
+                    color = "primary";
+                    switch (item.Crust)
+                    {
+                        case PizzaCrust.Thick:
+                            color = "success"; break;
+                        case PizzaCrust.Thin:
+                            color = "danger"; break;
+                    }
+                }
+				<span class="badge text-bg-@color">@item.Crust</span>
             </td>
             <td>
                 <a href="@Url.Action("Edit", "/Pizzas", new { id = item.Id })" class="btn btn-outline-primary">
