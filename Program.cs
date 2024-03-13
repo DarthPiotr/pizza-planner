@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Rewrite;
 using pizza_planner.Models;
 using System.Globalization;
 
@@ -13,7 +14,9 @@ namespace pizza_planner
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDbContext<DataContext>();
+			builder.Services.AddServerSideBlazor();
+
+			builder.Services.AddDbContext<DataContext>();
 
             var app = builder.Build();
 
@@ -40,6 +43,11 @@ namespace pizza_planner
                 SupportedUICultures = new List<CultureInfo> { defaultCulture }
             };
             app.UseRequestLocalization(localizationOptions);
+
+            app.MapBlazorHub();
+            var rewriteOptions = new RewriteOptions();
+            rewriteOptions.AddRewrite("_blazor(.*)", "/_blazor$1", skipRemainingRules: true);
+            app.UseRewriter(rewriteOptions);
 
             app.Run();
         }

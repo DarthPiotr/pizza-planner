@@ -1,0 +1,22 @@
+﻿@using pizza_planner.Models
+
+@code
+{
+	public Pizza SelectedPizza { get; set; }
+}
+
+<figure class="text-center">
+	<p>Pizza of the day!</p>
+	<blockquote class="blockquote">
+		<h3>@SelectedPizza.Name</h3>
+		<p>@(SelectedPizza.Ingredients.Count > 0 ? String.Join(", ", SelectedPizza.Ingredients) : "-")</p>
+		<p><small><em>@String.Format("{0:C}", SelectedPizza.Price)</em></small></p>
+	</blockquote>
+
+	<button @onclick="RefreshPizza"
+			type="button" class="btn btn-outline-secondary">
+		Losuj ponownie!
+	</button>
+</figure>
+
+
